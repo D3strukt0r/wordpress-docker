@@ -40,7 +40,7 @@ rm -r ./wp-content/plugins/akismet ./wp-content/plugins/hello.php
 rm -r ./wp-content/themes/twentyseventeen ./wp-content/themes/twentynineteen
 
 # Link wp-config.php
-mv ./wp-config-sample.php /data/wp-config.php
+touch /data/wp-config.php
 ln -s /data/wp-config.php ./wp-config.php
 
 # Link wp-content/
