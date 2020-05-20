@@ -3,11 +3,27 @@
 # ---------
 FROM d3strukt0r/php-wordpress AS php
 
-WORKDIR /tmp/app
-COPY . .
-RUN /tmp/app/build-php.sh
+COPY bin/php /usr/local/bin
+COPY build/php /build
+
+WORKDIR /app
+RUN set -eux; \
+apk update; \
+apk add --no-cache bash-completion sed curl unzip; \
+/build/install-wp-cli.sh; \
+/build/build.sh; \
+rm -r /build
 
 VOLUME [ "/data" ]
+
+ENV UPLOAD_LIMIT= \
+    DB_HOST=db \
+    DB_PORT=3306 \
+    DB_USER=root \
+    DB_PASSWORD= \
+    DB_NAME=wordpress \
+    DB_CHARSET=utf8mb4 \
+    DB_COLLATE=utf8mb4_unicode_ci
 
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD [ "php-fpm" ]
@@ -15,17 +31,20 @@ CMD [ "php-fpm" ]
 # -----------
 # Nginx stage
 # -----------
-FROM nginx:1.17-alpine AS nginx
+FROM nginx:stable-alpine AS nginx
 
-# Copy all the source files
-WORKDIR /tmp/app
-COPY build-nginx.sh .
-COPY default-nginx.conf .
+COPY bin/nginx /usr/local/bin   
+COPY build/nginx /build
+
 COPY --from=php /app /app
-COPY --from=php /data /data
-RUN set -ex; \
+
+WORKDIR /app
+RUN set -eux; \
 apk update; \
 apk add --no-cache bash nano; \
-./build-nginx.sh
+/build/build.sh
 
 VOLUME [ "/data" ]
+
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+CMD ["nginx", "-g", "daemon off;"]

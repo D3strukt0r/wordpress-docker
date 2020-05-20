@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -eux
 
 # Login to make sure we have access to private dockers and can upload to docker
 if [[ -v DOCKER_PASSWORD && -v DOCKER_USERNAME ]]; then

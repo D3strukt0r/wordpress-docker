@@ -1,0 +1,61 @@
+version: '3.4'
+
+services:
+  db:
+    image: mariadb
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - internal
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    networks:
+      - internal
+    ports:
+      - 8081:80
+    environment:
+      UPLOAD_LIMIT: 100M
+
+  php:
+    build:
+      context: .
+      target: php
+    depends_on:
+      - db
+    networks:
+      - internal
+    volumes:
+      - wordpress:/data
+    environment:
+      UPLOAD_LIMIT: 100M
+      DB_PASSWORD: password
+
+  web:
+    build:
+      context: .
+      target: nginx
+    depends_on:
+      - php
+    networks:
+      - internal
+    ports:
+      - 8080:80
+    environment:
+      HOST: localhost
+    volumes:
+      - wordpress:/data
+
+networks:
+  internal:
+    external: false
+
+volumes:
+  database:
+  wordpress:
