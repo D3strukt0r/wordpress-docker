@@ -85,14 +85,14 @@ chown www-data:www-data ./wp-config.php
 chmod 644 ./wp-config.php
 
 # Link wp-content (otherwise create one from "skeleton")
-if [[ ! -d "/data/wp-content" ]]; then
-    cp -r /tmp/wp-content /data
-fi
 if [[ ! -d "/data/wp-content/themes" ]]; then
-    cp -r /tmp/wp-content/themes /data/wp-content
+    mkdir -p /data/wp-content/themes
 fi
 if [[ "$(find /data/wp-content/themes -maxdepth 1 -type d | wc -l)" -eq 1 ]]; then
-    cp -r /tmp/wp-content/themes/twentytwenty /data/wp-content/themes
+    cp -r /skeleton/wp-content/themes/twentytwenty /data/wp-content/themes
+fi
+if [[ ! -d "/data/wp-content/plugins" ]]; then
+    mkdir -p /data/wp-content/plugins
 fi
 ln -s /data/wp-content ./wp-content
 

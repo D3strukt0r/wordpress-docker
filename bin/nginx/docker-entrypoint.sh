@@ -9,7 +9,7 @@ find . -type f -exec sh -c '>"{}"' \;
 
 # Link wp-config.php
 if [[ -f "/data/wp-config.php" ]]; then
-    ln -s /data/wp-config.php ./wp-config.php
+    ln -sf /data/wp-config.php ./wp-config.php
 fi
 
 # Link wp-content/

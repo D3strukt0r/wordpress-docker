@@ -26,23 +26,18 @@ else
     tar --strip-components=1 -xzf /build/wordpress.tar.gz
 fi
 
+# Delete standard stuff
+rm -r ./wp-content \
+      ./wp-config-sample.php
+
 # Fix permission
 chown www-data:www-data -R .
 find . -type d -exec chmod 755 {} \;
 find . -type f -exec chmod 644 {} \;
 
-# Delete standard stuff
-rm -r ./wp-content/plugins/akismet \
-      ./wp-content/plugins/hello.php \
-      ./wp-content/themes/twentyseventeen \
-      ./wp-content/themes/twentynineteen \
-      ./wp-content/themes/twentytwenty \
-      ./wp-config-sample.php
+# Start installing into skeleton
+mkdir /skeleton
+cd /skeleton
 
 # Redownload latest theme
-curl -fsSL -o /tmp/twentytwenty.zip https://downloads.wordpress.org/theme/twentytwenty.1.3.zip
-unzip -q /tmp/twentytwenty.zip -d ./wp-content/themes/
-rm /tmp/twentytwenty.zip
-
-# Move wp-content somewhere else to act as "skeleton"
-mv ./wp-content /tmp
+wp-theme-install.sh twentytwenty
