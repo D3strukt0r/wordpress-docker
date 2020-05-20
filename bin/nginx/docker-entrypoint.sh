@@ -14,7 +14,7 @@ fi
 
 # Link wp-content/
 if [[ -d "/data/wp-content" ]]; then
-    ln -s /data/wp-content ./wp-content
+    ln -sf /data/wp-content ./wp-content
 fi
 
 exec "$@"
