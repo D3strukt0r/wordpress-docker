@@ -27,7 +27,7 @@ if [[ ! -d "/data/wp-content/themes" ]]; then
     mkdir -p /data/wp-content/themes
 fi
 if [[ "$(find /data/wp-content/themes -maxdepth 1 -type d | wc -l)" -eq 1 ]]; then
-    cp -r /skeleton/wp-content/themes/twentytwenty /data/wp-content/themes
+    cp -r /skeleton/wp-content/themes/* /data/wp-content/themes
 fi
 if [[ ! -d "/data/wp-content/plugins" ]]; then
     mkdir -p /data/wp-content/plugins

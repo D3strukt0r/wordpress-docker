@@ -31,9 +31,8 @@ COPY bin/nginx /usr/local/bin
 COPY build/nginx /build
 
 COPY --from=php /app /app
-COPY --from=php /skeleton /app
+COPY --from=php /skeleton /skeleton
 
-WORKDIR /app
 RUN set -eux; \
 apk update; \
 apk add --no-cache bash nano; \
