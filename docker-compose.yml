@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   db:
@@ -46,9 +46,7 @@ services:
     networks:
       - internal
     ports:
-      - 8080:80
-    environment:
-      HOST: localhost
+      - 443:443
     volumes:
       - wordpress:/data
 

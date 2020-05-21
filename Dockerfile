@@ -27,18 +27,20 @@ CMD [ "php-fpm" ]
 # -----------
 FROM nginx:stable-alpine AS nginx
 
-COPY bin/nginx /usr/local/bin   
+COPY bin/nginx /usr/local/bin
 COPY build/nginx /build
 
 COPY --from=php /app /app
 COPY --from=php /skeleton /skeleton
 
 RUN set -eux; \
-apk update; \
-apk add --no-cache bash nano; \
-/build/build.sh
+    apk update; \
+    apk add --no-cache bash nano openssl; \
+    /build/build.sh
 
 VOLUME [ "/data" ]
+
+ENV USE_HTTP=false
 
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD ["nginx", "-g", "daemon off;"]

@@ -3,7 +3,7 @@
 set -eux
 
 # Get necessary software
-apk update;
+apk update
 apk add --no-cache bash-completion sed curl unzip
 /build/install-wp-cli.sh
 
@@ -18,14 +18,14 @@ apk add --no-cache bash-completion sed curl unzip
     echo 'ignore_repeated_errors = On'
     echo 'ignore_repeated_source = Off'
     echo 'html_errors = Off'
-} > "$PHP_INI_DIR"/conf.d/error-logging.ini
+} >"$PHP_INI_DIR"/conf.d/error-logging.ini
 
 # Download Wordpress
 mkdir /app
 cd /app
 if [[ ! -f "/build/wordpress.tar.gz" ]]; then
     wp --allow-root core download
-    
+
     # Delete download cache
     rm -r /home/www-data
 else
@@ -35,7 +35,7 @@ fi
 
 # Delete standard stuff
 rm -r ./wp-content \
-      ./wp-config-sample.php
+    ./wp-config-sample.php
 
 # Fix permission
 chown www-data:www-data -R .

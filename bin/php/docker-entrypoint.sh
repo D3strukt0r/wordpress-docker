@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eux
+set -eu
 
 cd /app
 
@@ -62,15 +62,16 @@ cd /app
 
 # Set upload limit
 if [[ -n "$UPLOAD_LIMIT" ]]; then
-    echo "Adding the custom upload limit."
+    echo "Adding the custom upload limit of $UPLOAD_LIMIT ..."
     {
         echo "upload_max_filesize = $UPLOAD_LIMIT"
         echo "post_max_size = $UPLOAD_LIMIT"
-    } > "$PHP_INI_DIR/conf.d/upload-limit.ini"
+    } >"$PHP_INI_DIR/conf.d/upload-limit.ini"
 fi
 
 # Create wp-config.php
 if [[ ! -f "/data/wp-config.php" ]]; then
+    echo "Creating a new wp-config.php in /data ..."
     wp --allow-root config create \
         --dbhost="$DB_HOST:$DB_PORT" \
         --dbuser="$DB_USER" \
@@ -88,6 +89,7 @@ if [[ ! -L "./wp-config.php" ]]; then
         if [[ -f "./wp-config.php" ]]; then
             rm ./wp-config.php
         fi
+        echo "Linking wp-config.php from /data to /app ..."
         ln -s /data/wp-config.php ./wp-config.php
     fi
 fi
@@ -97,12 +99,14 @@ if [[ ! -d "/data/wp-content/themes" ]]; then
     mkdir -p /data/wp-content/themes
 fi
 if [[ "$(find /data/wp-content/themes -maxdepth 1 -type d | wc -l)" -eq 1 ]]; then
+    echo "Copying themes from skeleton ..."
     cp -r /skeleton/wp-content/themes/twentytwenty /data/wp-content/themes
 fi
 if [[ ! -d "/data/wp-content/plugins" ]]; then
     mkdir -p /data/wp-content/plugins
 fi
 if [[ "$(find /data/wp-content/plugins -maxdepth 1 -type d | wc -l)" -eq 1 && -d "/skeleton/wp-content/plugins" ]]; then
+    echo "Copying plugins from skeleton ..."
     cp -r /skeleton/wp-content/plugins/* /data/wp-content/plugins
 fi
 
@@ -112,11 +116,13 @@ if [[ ! -L "./wp-content" ]]; then
         if [[ -f "./wp-content" ]]; then
             rm ./wp-content
         fi
+        echo "Linking wp-content/ from /data to /app ..."
         ln -s /data/wp-content ./wp-content
     fi
 fi
 
 # Fix permission
+echo "Fixing permission in /data to fit php-fpm ..."
 chown -R www-data:www-data /data
 find /data -type d -exec chmod 755 {} \;
 find /data -type f -exec chmod 644 {} \;
