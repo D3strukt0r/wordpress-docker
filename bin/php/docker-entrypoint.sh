@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -eux
 
@@ -78,7 +78,14 @@ if [[ ! -f "/data/wp-config.php" ]]; then
         --skip-check
     mv ./wp-config.php /data
 fi
-ln -sf /data/wp-config.php ./wp-config.php
+if [[ ! -L "./wp-config.php" ]]; then
+    if [[ -f "/data/wp-config.php" ]]; then
+        if [[ -f "./wp-config.php" ]]; then
+            rm ./wp-config.php
+        fi
+        ln -s /data/wp-config.php ./wp-config.php
+    fi
+fi
 
 # Fix permission
 chown www-data:www-data ./wp-config.php
@@ -94,11 +101,26 @@ fi
 if [[ ! -d "/data/wp-content/plugins" ]]; then
     mkdir -p /data/wp-content/plugins
 fi
-ln -s /data/wp-content ./wp-content
+if [[ "$(find /data/wp-content/plugins -maxdepth 1 -type d | wc -l)" -eq 1 && -d "/skeleton/wp-content/plugins" ]]; then
+    cp -r /skeleton/wp-content/plugins/* /data/wp-content/plugins
+fi
+if [[ ! -L "./wp-content" ]]; then
+    if [[ -d "/data/wp-content" ]]; then
+        if [[ -f "./wp-content" ]]; then
+            rm ./wp-content
+        fi
+        ln -s /data/wp-content ./wp-content
+    fi
+fi
 
 # Fix permission
 chown -R www-data:www-data ./wp-content
 find ./wp-content -type d -exec chmod 755 {} \;
 find ./wp-content -type f -exec chmod 644 {} \;
+
+# Fix permission
+chown -R www-data:www-data /data
+find /data -type d -exec chmod 755 {} \;
+find /data -type f -exec chmod 644 {} \;
 
 exec "$@"
