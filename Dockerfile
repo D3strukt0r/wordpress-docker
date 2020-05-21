@@ -6,13 +6,7 @@ FROM d3strukt0r/php-wordpress AS php
 COPY bin/php /usr/local/bin
 COPY build/php /build
 
-WORKDIR /app
-RUN set -eux; \
-apk update; \
-apk add --no-cache bash-completion sed curl unzip; \
-/build/install-wp-cli.sh; \
-/build/build.sh; \
-rm -r /build
+RUN /build/build.sh
 
 VOLUME [ "/data" ]
 
@@ -37,6 +31,7 @@ COPY bin/nginx /usr/local/bin
 COPY build/nginx /build
 
 COPY --from=php /app /app
+COPY --from=php /skeleton /app
 
 WORKDIR /app
 RUN set -eux; \

@@ -63,10 +63,13 @@ cd /app
 # Set upload limit
 if [[ -n "$UPLOAD_LIMIT" ]]; then
     echo "Adding the custom upload limit."
-    echo -e "upload_max_filesize = $UPLOAD_LIMIT\npost_max_size = $UPLOAD_LIMIT\n" > "$PHP_INI_DIR/conf.d/upload-limit.ini"
+    {
+        echo "upload_max_filesize = $UPLOAD_LIMIT"
+        echo "post_max_size = $UPLOAD_LIMIT"
+    } > "$PHP_INI_DIR/conf.d/upload-limit.ini"
 fi
 
-# Link wp-config.php if exists (otherwise create one)
+# Create wp-config.php
 if [[ ! -f "/data/wp-config.php" ]]; then
     wp --allow-root config create \
         --dbhost="$DB_HOST:$DB_PORT" \
@@ -78,6 +81,8 @@ if [[ ! -f "/data/wp-config.php" ]]; then
         --skip-check
     mv ./wp-config.php /data
 fi
+
+# Link wp-config.php
 if [[ ! -L "./wp-config.php" ]]; then
     if [[ -f "/data/wp-config.php" ]]; then
         if [[ -f "./wp-config.php" ]]; then
@@ -87,11 +92,7 @@ if [[ ! -L "./wp-config.php" ]]; then
     fi
 fi
 
-# Fix permission
-chown www-data:www-data ./wp-config.php
-chmod 644 ./wp-config.php
-
-# Link wp-content (otherwise create one from "skeleton")
+# Prepare wp-content/
 if [[ ! -d "/data/wp-content/themes" ]]; then
     mkdir -p /data/wp-content/themes
 fi
@@ -104,6 +105,8 @@ fi
 if [[ "$(find /data/wp-content/plugins -maxdepth 1 -type d | wc -l)" -eq 1 && -d "/skeleton/wp-content/plugins" ]]; then
     cp -r /skeleton/wp-content/plugins/* /data/wp-content/plugins
 fi
+
+# Link wp-content/
 if [[ ! -L "./wp-content" ]]; then
     if [[ -d "/data/wp-content" ]]; then
         if [[ -f "./wp-content" ]]; then
@@ -112,11 +115,6 @@ if [[ ! -L "./wp-content" ]]; then
         ln -s /data/wp-content ./wp-content
     fi
 fi
-
-# Fix permission
-chown -R www-data:www-data ./wp-content
-find ./wp-content -type d -exec chmod 755 {} \;
-find ./wp-content -type f -exec chmod 644 {} \;
 
 # Fix permission
 chown -R www-data:www-data /data

@@ -18,6 +18,9 @@ fi
 PLUGIN_NAME=$1
 PLUGIN_VERSION=${2:-latest-stable}
 
+echo "Downloading $PLUGIN_NAME from https://downloads.wordpress.org/plugin/$PLUGIN_NAME.$PLUGIN_VERSION.zip ..."
 curl -fsSL -o "/tmp/$PLUGIN_NAME.$PLUGIN_VERSION.zip" "https://downloads.wordpress.org/plugin/$PLUGIN_NAME.$PLUGIN_VERSION.zip"
+
+echo "Installing $PLUGIN_NAME ..."
 unzip -q "/tmp/$PLUGIN_NAME.$PLUGIN_VERSION.zip" -d "$PLUGINS_FOLDER"
 rm "/tmp/$PLUGIN_NAME.$PLUGIN_VERSION.zip"

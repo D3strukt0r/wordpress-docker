@@ -2,6 +2,11 @@
 
 set -eux
 
+# Get necessary software
+apk update;
+apk add --no-cache bash-completion sed curl unzip
+/build/install-wp-cli.sh
+
 # Setup some recommended variables for Wordpress
 {
     echo 'error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR'
@@ -16,6 +21,8 @@ set -eux
 } > "$PHP_INI_DIR"/conf.d/error-logging.ini
 
 # Download Wordpress
+mkdir /app
+cd /app
 if [[ ! -f "/build/wordpress.tar.gz" ]]; then
     wp --allow-root core download
     
@@ -41,3 +48,6 @@ cd /skeleton
 
 # Redownload latest theme
 wp-theme-install.sh twentytwenty
+
+# Cleanup
+rm -r /build

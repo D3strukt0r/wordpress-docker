@@ -18,6 +18,9 @@ fi
 THEME_NAME=$1
 THEME_VERSION=${2:-latest-stable}
 
+echo "Downloading $THEME_NAME from https://downloads.wordpress.org/theme/$THEME_NAME.$THEME_VERSION.zip ..."
 curl -fsSL -o "/tmp/$THEME_NAME.$THEME_VERSION.zip" "https://downloads.wordpress.org/theme/$THEME_NAME.$THEME_VERSION.zip"
+
+echo "Installing $THEME_NAME ..."
 unzip -q "/tmp/$THEME_NAME.$THEME_VERSION.zip" -d "$THEMES_FOLDER"
 rm "/tmp/$THEME_NAME.$THEME_VERSION.zip"
