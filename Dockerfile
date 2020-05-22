@@ -43,7 +43,8 @@ RUN set -eux; \
 
 VOLUME [ "/data" ]
 
-ENV USE_HTTP=false
+ENV UPLOAD_LIMIT=100M \
+    USE_HTTP=false
 
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD ["nginx", "-g", "daemon off;"]

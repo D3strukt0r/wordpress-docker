@@ -49,6 +49,8 @@ services:
       - 443:443
     volumes:
       - wordpress:/data
+    environment:
+      UPLOAD_LIMIT: 100M
 
 networks:
   internal:
