@@ -6,7 +6,10 @@ FROM d3strukt0r/php-wordpress AS php
 COPY bin/php /usr/local/bin
 COPY build/php /build
 
-RUN /build/build.sh
+RUN set -eux; \
+    apk update; \
+    apk add --no-cache bash nano; \
+    /build/build.sh
 
 VOLUME [ "/data" ]
 

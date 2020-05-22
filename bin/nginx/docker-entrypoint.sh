@@ -39,7 +39,7 @@ else
 fi
 
 # Empty all php files (to reduce size). Only the file's existence is important
-find . -type f -name "*.php" -exec sh -c '>"{}"' \;
+find . -type f -name "*.php" -exec sh -c 'i="$1"; >"$i"' _ {} \;
 
 # Create wp-config.php
 if [[ ! -f "/data/wp-config.php" ]]; then
