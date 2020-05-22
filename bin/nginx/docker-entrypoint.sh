@@ -5,10 +5,11 @@ set -eu
 cd /app
 
 # Prepare nginx
-envsubst < /etc/nginx/nginx.template > /etc/nginx/nginx.conf
+# https://github.com/docker-library/docs/issues/496#issuecomment-287927576
+envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/nginx.template >/etc/nginx/nginx.conf
 if [[ $USE_HTTP == "true" ]]; then
     echo "Enabling HTTP for nginx ..."
-    envsubst < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf
+    envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default.template >/etc/nginx/conf.d/default.conf
 else
     if [[ ! -f "/data/certs/website.crt" || ! -f "/data/certs/website.key" ]]; then
         echo "Creating SSL certificate ..."
@@ -42,7 +43,7 @@ else
 
     echo "Enabling HTTPS for nginx ..."
     if [[ ! -f /etc/nginx/conf.d/default-ssl.conf ]]; then
-        envsubst < /etc/nginx/conf.d/default-ssl.template > /etc/nginx/conf.d/default-ssl.conf
+        envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default-ssl.template >/etc/nginx/conf.d/default-ssl.conf
     fi
 fi
 
