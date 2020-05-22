@@ -26,11 +26,18 @@ else
         if [[ -f "/etc/ssl/certs/website.key" ]]; then
             rm /etc/ssl/certs/website.key
         fi
-
-        # Link files
-        ln -s /data/certs/website.crt /etc/ssl/certs/website.crt
-        ln -s /data/certs/website.key /etc/ssl/certs/website.key
     fi
+
+    # Link files
+    echo "Linking certificates to /etc/ssl/certs/* ..."
+    if [[ -f /etc/ssl/certs/website.crt ]]; then
+        rm /etc/ssl/certs/website.crt
+    fi
+    if [[ -f /etc/ssl/certs/website.key ]]; then
+        rm /etc/ssl/certs/website.key
+    fi
+    ln -s /data/certs/website.crt /etc/ssl/certs/website.crt
+    ln -s /data/certs/website.key /etc/ssl/certs/website.key
 
     echo "Enabling HTTPS for nginx ..."
     if [[ ! -f /etc/nginx/conf.d/default-ssl.conf ]]; then
