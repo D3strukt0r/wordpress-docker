@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -eu
 
@@ -9,24 +9,27 @@ if [[ $USE_HTTP == "true" ]]; then
     echo "Enabling HTTP for nginx ..."
     mv /etc/nginx/conf.d/default.template /etc/nginx/conf.d/default.conf
 else
-    if [[ ! -f "/data/certs/snakeoil.crt" || ! -f "/data/certs/snakeoil.key" ]]; then
+    if [[ ! -f "/data/certs/website.crt" || ! -f "/data/certs/website.key" ]]; then
         echo "Creating SSL certificate ..."
-        openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out snakeoil.crt -keyout snakeoil.key -subj "/C=/ST=/L=/O=/OU=/CN="
+        openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out website.crt -keyout website.key -subj "/C=/ST=/L=/O=/OU=/CN="
 
         if [[ ! -d /data/certs ]]; then
             mkdir -p /data/certs
         fi
-        mv snakeoil.crt /data/certs
-        mv snakeoil.key /data/certs
+        mv website.crt /data/certs
+        mv website.key /data/certs
 
-        if [[ -f "/etc/ssl/certs/snakeoil.crt" ]]; then
-            rm /etc/ssl/certs/snakeoil.crt
+        # Delete files if already exist (Docker saving files)
+        if [[ -f "/etc/ssl/certs/website.crt" ]]; then
+            rm /etc/ssl/certs/website.crt
         fi
-        ln -s /data/certs/snakeoil.crt /etc/ssl/certs/snakeoil.crt
-        if [[ -f "/etc/ssl/certs/snakeoil.key" ]]; then
-            rm /etc/ssl/certs/snakeoil.key
+        if [[ -f "/etc/ssl/certs/website.key" ]]; then
+            rm /etc/ssl/certs/website.key
         fi
-        ln -s /data/certs/snakeoil.key /etc/ssl/certs/snakeoil.key
+
+        # Link files
+        ln -s /data/certs/website.crt /etc/ssl/certs/website.crt
+        ln -s /data/certs/website.key /etc/ssl/certs/website.key
     fi
 
     echo "Enabling HTTPS for nginx ..."

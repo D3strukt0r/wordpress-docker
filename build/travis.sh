@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -eux
 
@@ -22,7 +22,7 @@ elif [[ "$TRAVIS_TAG" != "" ]]; then
     DOCKER_PUSH_TAG=$TRAVIS_TAG
 else
     echo "Skipping deployment because it's neither master, develop or a versioned tag"
-    exit 0;
+    exit 0
 fi
 
 if [[ -z $DOCKER_PASSWORD || -z $DOCKER_USERNAME ]]; then
