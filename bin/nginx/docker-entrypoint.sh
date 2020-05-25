@@ -7,10 +7,7 @@ cd /app
 # Prepare nginx
 # https://github.com/docker-library/docs/issues/496#issuecomment-287927576
 envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/nginx.template >/etc/nginx/nginx.conf
-if [[ $USE_HTTP == "true" ]]; then
-    echo "Enabling HTTP for nginx ..."
-    envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default.template >/etc/nginx/conf.d/default.conf
-else
+if [[ $USE_HTTPS == "true" ]]; then
     if [[ ! -f "/data/certs/website.crt" || ! -f "/data/certs/website.key" ]]; then
         echo "Creating SSL certificate ..."
         openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out website.crt -keyout website.key -subj "/C=/ST=/L=/O=/OU=/CN="
@@ -45,6 +42,9 @@ else
     if [[ ! -f /etc/nginx/conf.d/default-ssl.conf ]]; then
         envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default-ssl.template >/etc/nginx/conf.d/default-ssl.conf
     fi
+else
+    echo "Enabling HTTP for nginx ..."
+    envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default.template >/etc/nginx/conf.d/default.conf
 fi
 
 # Empty all php files (to reduce size). Only the file's existence is important

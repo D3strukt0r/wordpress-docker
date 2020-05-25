@@ -32,6 +32,7 @@ ENV UPLOAD_LIMIT= \
     WP_NONCE_SALT= \
     WP_DEBUG=false
 
+WORKDIR /app
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD [ "php-fpm" ]
 
@@ -54,7 +55,8 @@ RUN set -eux; \
 VOLUME [ "/data" ]
 
 ENV UPLOAD_LIMIT=100M \
-    USE_HTTP=false
+    USE_HTTPS=false
 
+WORKDIR /app
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD ["nginx", "-g", "daemon off;"]

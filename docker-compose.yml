@@ -54,7 +54,7 @@ services:
     networks:
       - internal
     ports:
-      - 443:443
+      - 80:80
     volumes:
       - wordpress:/data
     environment:
