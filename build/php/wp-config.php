@@ -95,7 +95,7 @@ define('WP_DEBUG', getenv('WP_DEBUG'));
 /**
  * If we're behind a proxy server and using HTTPS, we need to alert WordPress
  * of that fact see also
- * http://codex.wordpress.org/Administration_Over_SSL#Using_a_Reverse_Proxy
+ * https://wordpress.org/support/article/administration-over-ssl/#using-a-reverse-proxy
  */
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
     $_SERVER['HTTPS'] = 'on';
