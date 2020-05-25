@@ -4,61 +4,31 @@ set -eu
 
 cd /app
 
-# TODO: See what to do with following code:
-# # https://github.com/docker-library/wordpress/blob/8215003254de4bf0a8ddd717c3c393e778b872ce/php7.4/fpm-alpine/docker-entrypoint.sh
-# # usage: file_env VAR [DEFAULT]
-# #   ie: file_env 'XYZ_DB_PASSWORD' 'example'
-# #(will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
-# # "$XYZ_DB_PASSWORD" from a file, especially for Docker's secrets feature)
-# file_env() {
-#     local var="$1"
-#     local fileVar="${var}_FILE"
-#     local def="${2:-}"
-#     if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
-#         echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
-#         exit 1
-#     fi
-#     local val="$def"
-#     if [ "${!var:-}" ]; then
-#         val="${!var}"
-#     elif [ "${!fileVar:-}" ]; then
-#         val="$(< "${!fileVar}")"
-#     fi
-#     export "$var"="$val"
-#     unset "$fileVar"
-# }
+# usage: file_env VAR [DEFAULT]
+#   ie: file_env 'XYZ_DB_PASSWORD' 'example'
+#(will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
+# "$XYZ_DB_PASSWORD" from a file, especially for Docker's secrets feature)
+file_env() {
+    local var="$1"
+    local fileVar="${var}_FILE"
+    local def="${2:-}"
+    if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
+        echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
+        exit 1
+    fi
+    local val="$def"
+    if [ "${!var:-}" ]; then
+        val="${!var}"
+    elif [ "${!fileVar:-}" ]; then
+        val="$(<"${!fileVar}")"
+    fi
+    export "$var"="$val"
+    unset "$fileVar"
+}
 
-# # allow any of these "Authentication Unique Keys and Salts." to be specified via
-# # environment variables with a "WORDPRESS_" prefix (ie, "WORDPRESS_AUTH_KEY")
-# uniqueEnvs=(
-#     AUTH_KEY
-#     SECURE_AUTH_KEY
-#     LOGGED_IN_KEY
-#     NONCE_KEY
-#     AUTH_SALT
-#     SECURE_AUTH_SALT
-#     LOGGED_IN_SALT
-#     NONCE_SALT
-# )
-# envs=(
-#     WORDPRESS_DB_HOST
-#     WORDPRESS_DB_USER
-#     WORDPRESS_DB_PASSWORD
-#     WORDPRESS_DB_NAME
-#     WORDPRESS_DB_CHARSET
-#     WORDPRESS_DB_COLLATE
-#     "${uniqueEnvs[@]/#/WORDPRESS_}"
-#     WORDPRESS_TABLE_PREFIX
-#     WORDPRESS_DEBUG
-#     WORDPRESS_CONFIG_EXTRA
-# )
-# haveConfig=
-# for e in "${envs[@]}"; do
-#     file_env "$e"
-#     if [ -z "$haveConfig" ] && [ -n "${!e}" ]; then
-#         haveConfig=1
-#     fi
-# done
+generate_salt() {
+    echo head -c1m /dev/urandom | sha1sum | cut -d' ' -f1
+}
 
 # Set upload limit
 if [[ -n "$UPLOAD_LIMIT" ]]; then
@@ -69,29 +39,70 @@ if [[ -n "$UPLOAD_LIMIT" ]]; then
     } >"$PHP_INI_DIR/conf.d/upload-limit.ini"
 fi
 
-# Create wp-config.php
-if [[ ! -f "/data/wp-config.php" ]]; then
-    echo "Creating a new wp-config.php in /data ..."
-    wp --allow-root config create \
-        --dbhost="$DB_HOST:$DB_PORT" \
-        --dbuser="$DB_USER" \
-        --dbpass="$DB_PASSWORD" \
-        --dbname="$DB_NAME" \
-        --dbcharset="$DB_CHARSET" \
-        --dbcollate="$DB_COLLATE" \
-        --skip-check
-    mv ./wp-config.php /data
+# Check if database is available
+if ! php /usr/local/bin/test-db-connection.php; then
+    echo >&2
+    echo >&2 "WARNING: unable to establish a database connection to '$DB_HOST:$DB_PORT'"
+    echo >&2 '  continuing anyways (which might have unexpected results)'
+    echo >&2
+else
+    echo "Connection to database available"
 fi
 
 # Link wp-config.php
-if [[ ! -L "./wp-config.php" ]]; then
-    if [[ -f "/data/wp-config.php" ]]; then
-        if [[ -f "./wp-config.php" ]]; then
-            rm ./wp-config.php
-        fi
-        echo "Linking wp-config.php from /data to /app ..."
-        ln -s /data/wp-config.php ./wp-config.php
+if [[ ! -f "/data/wp-config.php" ]]; then
+    # Check for available salts
+    MISSING_SALT=false
+    if [[ -z $WP_AUTH_KEY ]]; then
+        MISSING_SALT=true
+        echo "WP_AUTH_KEY=$(generate_salt)"
     fi
+    if [[ -z $WP_SECURE_AUTH_KEY ]]; then
+        MISSING_SALT=true
+        echo "WP_SECURE_AUTH_KEY=$(generate_salt)"
+    fi
+    if [[ -z $WP_LOGGED_IN_KEY ]]; then
+        MISSING_SALT=true
+        echo "WP_LOGGED_IN_KEY=$(generate_salt)"
+    fi
+    if [[ -z $WP_NONCE_KEY ]]; then
+        MISSING_SALT=true
+        echo "WP_NONCE_KEY=$(generate_salt)"
+    fi
+    if [[ -z $WP_AUTH_SALT ]]; then
+        MISSING_SALT=true
+        echo "WP_AUTH_SALT=$(generate_salt)"
+    fi
+    if [[ -z $WP_SECURE_AUTH_SALT ]]; then
+        MISSING_SALT=true
+        echo "WP_SECURE_AUTH_SALT=$(generate_salt)"
+    fi
+    if [[ -z $WP_LOGGED_IN_SALT ]]; then
+        MISSING_SALT=true
+        echo "WP_LOGGED_IN_SALT=$(generate_salt)"
+    fi
+    if [[ -z $WP_NONCE_SALT ]]; then
+        MISSING_SALT=true
+        echo "WP_NONCE_SALT=$(generate_salt)"
+    fi
+    if [[ $MISSING_SALT == "true" ]]; then
+        echo "You seem not to have set some required variables. Please take a look"
+        echo "at the ones given above for you to use or visit:"
+        echo "https://api.wordpress.org/secret-key/1.1/salt/"
+        exit 1
+    fi
+
+    echo "Linking wp-config.php in /skeleton ..."
+    if [[ -f "./wp-config.php" ]]; then
+        rm ./wp-config.php
+    fi
+    ln -s /skeleton/wp-config.php ./wp-config.php
+else
+    echo "Linking wp-config.php from /data to /app ..."
+    if [[ -f "./wp-config.php" ]]; then
+        rm ./wp-config.php
+    fi
+    ln -s /data/wp-config.php ./wp-config.php
 fi
 
 # Prepare wp-content/
@@ -100,7 +111,7 @@ if [[ ! -d "/data/wp-content/themes" ]]; then
 fi
 if [[ "$(find /data/wp-content/themes -maxdepth 1 -type d | wc -l)" -eq 1 ]]; then
     echo "Copying themes from skeleton ..."
-    cp -r /skeleton/wp-content/themes/twentytwenty /data/wp-content/themes
+    cp -r /skeleton/wp-content/themes/* /data/wp-content/themes
 fi
 if [[ ! -d "/data/wp-content/plugins" ]]; then
     mkdir -p /data/wp-content/plugins

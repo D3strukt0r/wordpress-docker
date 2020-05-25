@@ -46,6 +46,9 @@ find . -type f -exec chmod 644 {} \;
 mkdir /skeleton
 cd /skeleton
 
+# Save custom config
+mv /build/wp-config.php .
+
 # Redownload latest theme
 wp-theme-install.sh twentytwenty
 

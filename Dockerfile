@@ -20,7 +20,17 @@ ENV UPLOAD_LIMIT= \
     DB_PASSWORD= \
     DB_NAME=wordpress \
     DB_CHARSET=utf8mb4 \
-    DB_COLLATE=utf8mb4_unicode_ci
+    DB_COLLATE=utf8mb4_unicode_ci \
+    DB_TABLE_PREFIX=wp_ \
+    WP_AUTH_KEY= \
+    WP_SECURE_AUTH_KEY= \
+    WP_LOGGED_IN_KEY= \
+    WP_NONCE_KEY= \
+    WP_AUTH_SALT= \
+    WP_SECURE_AUTH_SALT= \
+    WP_LOGGED_IN_SALT= \
+    WP_NONCE_SALT= \
+    WP_DEBUG=false
 
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 CMD [ "php-fpm" ]
