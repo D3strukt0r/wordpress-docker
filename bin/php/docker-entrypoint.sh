@@ -27,7 +27,7 @@ file_env() {
 }
 
 generate_salt() {
-    echo head -c1m /dev/urandom | sha1sum | cut -d' ' -f1
+    head -c1m /dev/urandom | sha1sum | cut -d' ' -f1
 }
 
 # Set upload limit
