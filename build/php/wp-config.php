@@ -88,7 +88,7 @@ $table_prefix = getenv('DB_TABLE_PREFIX');
  *
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
-define('WP_DEBUG', getenv('WP_DEBUG'));
+define('WP_DEBUG', filter_var(getenv('WP_DEBUG'), FILTER_VALIDATE_BOOLEAN));
 
 /* That's all, stop editing! Happy publishing. */
 
