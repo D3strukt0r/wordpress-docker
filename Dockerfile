@@ -13,7 +13,7 @@ RUN set -eux; \
 
 VOLUME [ "/data" ]
 
-ENV UPLOAD_LIMIT= \
+ENV UPLOAD_LIMIT=10M \
     DB_HOST=db \
     DB_PORT=3306 \
     DB_USER=root \
@@ -54,7 +54,7 @@ RUN set -eux; \
 
 VOLUME [ "/data" ]
 
-ENV UPLOAD_LIMIT=100M \
+ENV UPLOAD_LIMIT=10M \
     USE_HTTPS=false
 
 WORKDIR /app
