@@ -30,11 +30,43 @@ generate_salt() {
     head -c1m /dev/urandom | sha1sum | cut -d' ' -f1
 }
 
+# Setup php
+cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+{
+    echo 'error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR'
+    echo 'display_errors = Off'
+    echo 'display_startup_errors = Off'
+    echo 'log_errors = On'
+    echo 'error_log = /dev/stderr'
+    echo 'log_errors_max_len = 1024'
+    echo 'ignore_repeated_errors = On'
+    echo 'ignore_repeated_source = Off'
+    echo 'html_errors = Off'
+} >"$PHP_INI_DIR/conf.d/error-logging.ini"
+
+{
+    echo "opcache.revalidate_freq = 0"
+    echo "opcache.validate_timestamps = 0"
+    echo "opcache.max_accelerated_files = $(find -L /app -type f -print | grep -c php)"
+    echo "opcache.memory_consumption = 192"
+    echo "opcache.interned_strings_buffer = 16"
+    echo "opcache.fast_shutdown = 1"
+} >"$PHP_INI_DIR/conf.d/opcache.ini"
+
+{
+    echo "max_execution_time = 600"
+    echo "memory_limit = 256M"
+    echo "max_input_vars = 1000"
+    echo "max_input_time = 400"
+} >"$PHP_INI_DIR/conf.d/misc.ini"
+
 # Set upload limit
 if [[ -n "$UPLOAD_LIMIT" ]]; then
     echo "Adding the custom upload limit of $UPLOAD_LIMIT ..."
     {
         echo "upload_max_filesize = $UPLOAD_LIMIT"
+		# TODO: "post_max_size" should be greater than "upload_max_filesize".
         echo "post_max_size = $UPLOAD_LIMIT"
     } >"$PHP_INI_DIR/conf.d/upload-limit.ini"
 fi

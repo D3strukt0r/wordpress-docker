@@ -8,10 +8,10 @@ if [[ -v DOCKER_PASSWORD && -v DOCKER_USERNAME ]]; then
 fi
 
 REPO_PHP=wordpress-php
-docker build --target php -t "$REPO_PHP":latest .
+docker build --target php -t "$REPO_PHP" .
 
 REPO_NGINX=wordpress-nginx
-docker build --target nginx -t "$REPO_NGINX":latest .
+docker build --target nginx -t "$REPO_NGINX" .
 
 if [[ -v DOCKER_PASSWORD && -v DOCKER_USERNAME ]]; then
     echo "Choosing tag to upload to... (Branch: '$TRAVIS_BRANCH' | Tag: '$TRAVIS_TAG')"

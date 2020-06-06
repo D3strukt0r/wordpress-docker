@@ -1,14 +1,14 @@
 # ---------
 # PHP stage
 # ---------
-FROM d3strukt0r/php-wordpress AS php
+FROM php:7.4-fpm-alpine AS php
 
 COPY bin/php /usr/local/bin
 COPY build/php /build
 
 RUN set -eux; \
     apk update; \
-    apk add --no-cache bash nano; \
+    apk add --no-cache bash bash-completion nano sed curl unzip; \
     /build/build.sh
 
 VOLUME [ "/data" ]

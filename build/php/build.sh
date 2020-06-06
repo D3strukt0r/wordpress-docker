@@ -2,23 +2,48 @@
 
 set -eux
 
-# Get necessary software
-apk update
-apk add --no-cache bash-completion sed curl unzip
-/build/install-wp-cli.sh
+# Alpine package for "imagemagick" contains ~120 .so files, see: https://github.com/docker-library/wordpress/pull/497
+apk add --no-cache imagemagick
+# shellcheck disable=SC2086
+apk add --no-cache --virtual .build-deps \
+    $PHPIZE_DEPS \
+    freetype-dev libjpeg-turbo-dev libpng-dev \
+    gettext-dev \
+    imap-dev \
+    icu-dev \
+    libzip-dev \
+    imagemagick-dev
+docker-php-ext-configure gd --with-freetype --with-jpeg >/dev/null
+docker-php-ext-install -j "$(nproc)" \
+    exif \
+    gd \
+    gettext \
+    imap \
+    intl \
+    mysqli \
+    opcache \
+    sockets \
+    zip \
+    >/dev/null
+pecl install imagick >/dev/null
+docker-php-ext-enable imagick
 
-# Setup some recommended variables for Wordpress
-{
-    echo 'error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR'
-    echo 'display_errors = Off'
-    echo 'display_startup_errors = Off'
-    echo 'log_errors = On'
-    echo 'error_log = /dev/stderr'
-    echo 'log_errors_max_len = 1024'
-    echo 'ignore_repeated_errors = On'
-    echo 'ignore_repeated_source = Off'
-    echo 'html_errors = Off'
-} >"$PHP_INI_DIR"/conf.d/error-logging.ini
+# Find packages to keep, so we can safely delete dev packages
+RUN_DEPS="$(
+    scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions |
+        tr ',' '\n' |
+        sort -u |
+        awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }'
+)"
+# shellcheck disable=SC2086
+apk add --virtual .phpexts-rundeps $RUN_DEPS
+
+# Remove building tools for smaller container size
+rm -rf /tmp/pear
+apk del .build-deps
+
+# Get necessary software
+/build/install-wp-cli.sh
 
 # Download Wordpress
 mkdir /app
