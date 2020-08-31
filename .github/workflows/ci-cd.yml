@@ -52,12 +52,12 @@ jobs:
           IMAGE_ID_PHP=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP
 
           # Change all uppercase to lowercase
-          IMAGE_ID_PHP=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          IMAGE_ID_PHP=$(echo $IMAGE_ID_PHP | tr '[A-Z]' '[a-z]')
 
           IMAGE_ID_NGINX=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX
 
           # Change all uppercase to lowercase
-          IMAGE_ID_NGINX=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          IMAGE_ID_NGINX=$(echo $IMAGE_ID_NGINX | tr '[A-Z]' '[a-z]')
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
