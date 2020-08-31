@@ -2,6 +2,21 @@
 
 Wordpress inside Docker.
 
+**Project**
+
+[![License](https://img.shields.io/github/license/d3strukt0r/docker-wordpress)][license]
+
+**master**-branch (alias stable, latest)
+
+[![GH Action CI/CD](https://github.com/D3strukt0r/docker-wordpress/workflows/CI/CD/badge.svg?branch=master)][gh-action]
+
+**develop**-branch (alias nightly)
+
+[![GH Action CI/CD](https://github.com/D3strukt0r/docker-wordpress/workflows/CI/CD/badge.svg?branch=develop)][gh-action]
+
+[license]: https://github.com/D3strukt0r/docker-wordpress/blob/master/LICENSE.txt
+[gh-action]: https://github.com/D3strukt0r/docker-wordpress/actions
+
 ## Getting Started
 
 These instructions will cover usage information and for the docker container
