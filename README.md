@@ -34,17 +34,25 @@ In order to run this container you'll need docker installed.
 #### Container Parameters
 
 ```shell
-docker run -v $PWD/uploads:/data/wp-content/uploads -e DB_PASSWORD=password -e <all the keys> d3strukt0r/wordpress-php
+docker run -v $PWD/uploads:/app/wp-content/uploads -e DB_PASSWORD=password -e <all the keys> d3strukt0r/wordpress-php
 ```
 ```shell
-docker run -p 80:80 -v $PWD/uploads:/data/wp-content/uploads d3strukt0r/wordpress-nginx
+docker run -p 80:80 -v $PWD/uploads:/app/wp-content/uploads d3strukt0r/wordpress-nginx
 ```
 
 #### Environment Variables
 
 _PHP_
 
--   `UPLOAD_LIMIT` - The upload limit on the website (has to be the same on php and nginx) (Default: `10M`)
+PHP settings
+
+-   `PHP_MAX_EXECUTION_TIME` - The maximum time php can run per request (Default: `100M`)
+-   `PHP_MEMORY_LIMIT` - The memory limit that php can use (Default: `256M`)
+-   `PHP_POST_MAX_SIZE` - The maximum size for sending POST requests (maximum upload size) (has to be the same on nginx) (Default: `100M`)
+-   `PHP_UPLOAD_MAX_FILESIZE` - The maximum size per file for uploading (Default: `100M`)
+
+Database settings
+
 -   `DB_HOST` - Host of the DBMS (Default: `db`)
 -   `DB_PORT` - Port of the DBMS (Default: `3306`)
 -   `DB_USER` - The username to use in the DBMS (Default: `root`)
@@ -53,6 +61,9 @@ _PHP_
 -   `DB_CHARSET` - The character set to use in the DBMS (Default: `utf8mb4`)
 -   `DB_COLLATE` - The collation to use in the DBMS (Default: `utf8mb4_unicode_ci`)
 -   `DB_TABLE_PREFIX` - The table prefix to use in the DBMS (Default: `wp_`) (Hint: Cannot be empty)
+
+Wordpress secrets
+
 -   `WP_AUTH_KEY` - Key (Default: ) (Required)
 -   `WP_SECURE_AUTH_KEY` - Key (Default: ) (Required)
 -   `WP_LOGGED_IN_KEY` - Key (Default: ) (Required)
@@ -61,31 +72,34 @@ _PHP_
 -   `WP_SECURE_AUTH_SALT` - Salt (Default: ) (Required)
 -   `WP_LOGGED_IN_SALT` - Salt (Default: ) (Required)
 -   `WP_NONCE_SALT` - Salt (Default: ) (Required)
+
+Other wordpress settings
+
 -   `WP_DEBUG` - Whether to enable debug mode (Default: `false`)
 
 _Nginx_
 
--   `UPLOAD_LIMIT` - The upload limit on the website (has to be the same on php and nginx) (Default: `10M`)
+-   `NGINX_CLIENT_MAX_BODY_SIZE` - The maximum size for sending POST requests (maximum upload size) (has to be the same on php) (Default: `100M`)
 -   `USE_HTTPS` - Enables https. (Not recommeded, rather use Traefik) (Default: `false`)
 
 #### Volumes
 
--   `/data` - All the data
--   `/data/wp-config.php` - Will use default wp-confing.php or the one on /data if provided
--   `/data/wp-content/` - Contains plugins, themes, uploads, etc.
--   `/data/wp-content/uploads` - Contains all user uploads (Recommended to connect)
+-   `/app` - All the data
+-   `/app/wp-config.php` - Will use default wp-confing.php or the one on /data if provided
+-   `/app/wp-content/` - Contains plugins, themes, uploads, etc.
+-   `/app/wp-content/uploads` - Contains all user uploads (Recommended to connect)
 
 #### Useful File Locations
 
 _PHP_
 
--   `/usr/local/bin/wp-plugin-install.sh` - Installs a plugin from wordpress in the current directory
--   `/usr/local/bin/wp-theme-install.sh` - Installs a theme from wordpress in the current directory
+-   `/usr/local/bin/wp-plugin-install` - Installs a plugin from wordpress in the current directory
+-   `/usr/local/bin/wp-theme-install` - Installs a theme from wordpress in the current directory
 
 ## Built With
 
 -   [Wordpress](https://wordpress.org/) - The main software
--   [Travis CI](https://travis-ci.com/) - Automatic CI (Testing) / CD (Deployment)
+-   [Github Actions](https://github.com/features/actions) - Automatic CI (Testing) / CD (Deployment)
 -   [Docker](https://www.docker.com/) - Building a Container for the Server
 
 ## Find Us

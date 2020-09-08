@@ -49,39 +49,19 @@ jobs:
 
       - name: Set variables
         run: |
-          IMAGE_ID_PHP=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP
-
           # Change all uppercase to lowercase
-          IMAGE_ID_PHP=$(echo $IMAGE_ID_PHP | tr '[A-Z]' '[a-z]')
-
-          IMAGE_ID_NGINX=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX
-
-          # Change all uppercase to lowercase
-          IMAGE_ID_NGINX=$(echo $IMAGE_ID_NGINX | tr '[A-Z]' '[a-z]')
+          echo "::set-env name=IMAGE_ID_PHP::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP" | tr '[A-Z]' '[a-z]')"
+          echo "::set-env name=IMAGE_ID_NGINX::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX" | tr '[A-Z]' '[a-z]')"
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [ "$VERSION" = 'master' ] && VERSION=latest
+          [ "$VERSION" = 'develop' ] && VERSION=nightly
 
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
-          # Figure out correct version
-          if [ "$VERSION" == "master" ]; then
-              DOCKER_VERSION=latest
-          elif [ "$VERSION" == "develop" ]; then
-              DOCKER_VERSION=nightly
-          else
-              DOCKER_VERSION=$VERSION
-          fi
-
-          echo "IMAGE_ID_PHP=$IMAGE_ID_PHP"
-          echo "::set-env name=IMAGE_ID_PHP::$IMAGE_ID_PHP"
-          echo "IMAGE_ID_NGINX=$IMAGE_ID_NGINX"
-          echo "::set-env name=IMAGE_ID_NGINX::$IMAGE_ID_NGINX"
-          echo "VERSION=$VERSION"
           echo "::set-env name=VERSION::$VERSION"
-          echo "DOCKER_VERSION=$DOCKER_VERSION"
-          echo "::set-env name=DOCKER_VERSION::$DOCKER_VERSION"
 
       - name: Build PHP image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME_PHP --target php
@@ -94,10 +74,10 @@ jobs:
 
       - name: Push PHP image to Docker Hub
         run: |
-          docker tag $IMAGE_NAME_PHP $IMAGE_ID_PHP:$DOCKER_VERSION
-          docker push $IMAGE_ID_PHP:$DOCKER_VERSION
+          docker tag $IMAGE_NAME_PHP $IMAGE_ID_PHP:$VERSION
+          docker push $IMAGE_ID_PHP:$VERSION
 
       - name: Push Nginx image to Docker Hub
         run: |
-          docker tag $IMAGE_NAME_NGINX $IMAGE_ID_NGINX:$DOCKER_VERSION
-          docker push $IMAGE_ID_NGINX:$DOCKER_VERSION
+          docker tag $IMAGE_NAME_NGINX $IMAGE_ID_NGINX:$VERSION
+          docker push $IMAGE_ID_NGINX:$VERSION

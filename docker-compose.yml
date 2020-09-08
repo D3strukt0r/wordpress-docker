@@ -6,6 +6,11 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--password=password"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
       - internal
     volumes:
@@ -34,9 +39,10 @@ services:
     networks:
       - internal
     volumes:
-      - wordpress:/data
+      - wp_content:/app/wp-content
     environment:
-      UPLOAD_LIMIT: 100M
+      PHP_MAX_EXECUTION_TIME: 0
+      ENVIRONMENT: dev
       DB_PASSWORD: password
       WP_AUTH_KEY: 6dd1921951685a10daf08cc7b400c40dc46434bf
       WP_SECURE_AUTH_KEY: eacb65b6b38b62459c0c0825b3a4a1c135551f0b
@@ -57,10 +63,11 @@ services:
       - internal
     ports:
       - 80:80
+      # - 443:443
     volumes:
-      - wordpress:/data
-    environment:
-      UPLOAD_LIMIT: 100M
+      - wp_content:/app/wp-content:ro
+    # environment:
+    #   USE_HTTPS: "true"
 
 networks:
   internal:
@@ -68,4 +75,4 @@ networks:
 
 volumes:
   database:
-  wordpress:
+  wp_content:
