@@ -24,7 +24,7 @@ entrypoint_error() {
     exit 1
 }
 
-# Usage: file_env VAR [DEFAULT]
+# usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 #
 # Will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of

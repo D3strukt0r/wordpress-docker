@@ -40,6 +40,8 @@ services:
       - internal
     volumes:
       - wp_content:/app/wp-content
+      - ./php/wp-plugin-install.sh:/usr/local/bin/wp-plugin-install
+      - ./php/wp-theme-install.sh:/usr/local/bin/wp-theme-install
     environment:
       PHP_MAX_EXECUTION_TIME: 0
       ENVIRONMENT: dev
