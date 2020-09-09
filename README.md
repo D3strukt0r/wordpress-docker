@@ -9,13 +9,13 @@ Project
 master-branch (alias stable, latest)
 
 [![GH Action CI/CD](https://github.com/D3strukt0r/docker-wordpress/workflows/CI/CD/badge.svg?branch=master)][gh-action]
-[![Codacy grade](https://img.shields.io/codacy/grade/6cb0a9563bc9441b937d5246c895a082/master)][codacy]
+[![Codacy grade](https://img.shields.io/codacy/grade/17d3bf5aebda47ababb0e156bab78c4e/master)][codacy]
 
 <!--
 develop-branch (alias nightly)
 
 [![GH Action CI/CD](https://github.com/D3strukt0r/docker-wordpress/workflows/CI/CD/badge.svg?branch=develop)][gh-action]
-[![Codacy grade](https://img.shields.io/codacy/grade/6cb0a9563bc9441b937d5246c895a082/develop)][codacy]
+[![Codacy grade](https://img.shields.io/codacy/grade/17d3bf5aebda47ababb0e156bab78c4e/develop)][codacy]
 -->
 
 ## Getting Started
