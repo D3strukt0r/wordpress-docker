@@ -1,0 +1,34 @@
+name: Update Docker Hub Description
+
+env:
+  IMAGE_NAME_PHP: wordpress-php
+  IMAGE_NAME_NGINX: wordpress-nginx
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - README.md
+      - .github/workflows/dockerhub-description.yml
+
+  workflow_dispatch:
+
+jobs:
+  dockerHubDescription:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set variables
+        run: |
+          # Change all uppercase to lowercase
+          echo "::set-env name=IMAGE_ID_PHP::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP" | tr '[A-Z]' '[a-z]')"
+          echo "::set-env name=IMAGE_ID_NGINX::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX" | tr '[A-Z]' '[a-z]')"
+
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v2
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
