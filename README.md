@@ -2,20 +2,21 @@
 
 Wordpress inside Docker.
 
-**Project**
+_Project_
 
 [![License](https://img.shields.io/github/license/d3strukt0r/docker-wordpress)][license]
 
-**master**-branch (alias stable, latest)
+_master_-branch (alias stable, latest)
 
 [![GH Action CI/CD](https://github.com/D3strukt0r/docker-wordpress/workflows/CI/CD/badge.svg?branch=master)][gh-action]
+[![Codacy grade](https://img.shields.io/codacy/grade/6cb0a9563bc9441b937d5246c895a082/master)][codacy]
 
-**develop**-branch (alias nightly)
+<!--
+_develop_-branch (alias nightly)
 
 [![GH Action CI/CD](https://github.com/D3strukt0r/docker-wordpress/workflows/CI/CD/badge.svg?branch=develop)][gh-action]
-
-[license]: https://github.com/D3strukt0r/docker-wordpress/blob/master/LICENSE.txt
-[gh-action]: https://github.com/D3strukt0r/docker-wordpress/actions
+[![Codacy grade](https://img.shields.io/codacy/grade/6cb0a9563bc9441b937d5246c895a082/develop)][codacy]
+-->
 
 ## Getting Started
 
@@ -131,3 +132,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 -   Hat tip to anyone whose code was used
 -   Inspiration
 -   etc
+
+[license]: https://github.com/D3strukt0r/docker-wordpress/blob/master/LICENSE.txt
+[gh-action]: https://github.com/D3strukt0r/docker-wordpress/actions
+[codacy]: https://app.codacy.com/manual/D3strukt0r/docker-wordpress/dashboard
