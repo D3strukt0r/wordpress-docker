@@ -6,14 +6,10 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 ## Pull Request Process
 
-<!-- markdownlint-disable MD030 -->
-
 1.  Ensure any install or build dependencies are removed before the end of the layer when doing a build.
 2.  Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
 3.  Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
 4.  You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
-
-<!-- markdownlint-enable MD030 -->
 
 ## Code of Conduct
 
@@ -25,32 +21,19 @@ In the interest of fostering an open and welcoming environment, we as contributo
 
 Examples of behavior that contributes to creating a positive environment include:
 
-<!-- markdownlint-disable MD030 -->
-
 -   Using welcoming and inclusive language
 -   Being respectful of differing viewpoints and experiences
 -   Gracefully accepting constructive criticism
 -   Focusing on what is best for the community
-
 -   Showing empathy towards other community members
-
-<!-- markdownlint-enable MD030 -->
 
 Examples of unacceptable behavior by participants include:
 
-<!-- markdownlint-disable MD030 -->
-
 -   The use of sexualized language or imagery and unwelcome sexual attention or advances
-
 -   Trolling, insulting/derogatory comments, and personal or political attacks
-
 -   Public or private harassment
-
 -   Publishing others' private information, such as a physical or electronic address, without explicit permission
-
 -   Other conduct which could reasonably be considered inappropriate in a professional setting
-
-<!-- markdownlint-enable MD030 -->
 
 ### Our Responsibilities
 
