@@ -26,9 +26,16 @@ jobs:
           echo "::set-env name=IMAGE_ID_PHP::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP" | tr '[A-Z]' '[a-z]')"
           echo "::set-env name=IMAGE_ID_NGINX::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX" | tr '[A-Z]' '[a-z]')"
 
-      - name: Docker Hub Description
+      - name: Update README for PHP image on Docker Hub
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
+          DOCKERHUB_REPOSITORY: ${{ env.IMAGE_ID_PHP }}
+
+      - name: Update README for Nginx image on Docker Hub
+        uses: peter-evans/dockerhub-description@v2
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKERHUB_REPOSITORY: ${{ env.IMAGE_ID_NGINX }}
