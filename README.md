@@ -5,6 +5,10 @@ Wordpress inside Docker.
 Project
 
 [![License](https://img.shields.io/github/license/d3strukt0r/docker-wordpress)][license]
+[![Docker Stars](https://img.shields.io/docker/stars/d3strukt0r/wordpress-nginx.svg?label=docker%20stars%20(nginx))][docker-nginx]
+[![Docker Pulls](https://img.shields.io/docker/pulls/d3strukt0r/wordpress-nginx.svg?label=docker%20pulls%20(nginx))][docker-nginx]
+[![Docker Stars](https://img.shields.io/docker/stars/d3strukt0r/wordpress-php.svg?label=docker%20stars%20(php))][docker-php]
+[![Docker Pulls](https://img.shields.io/docker/pulls/d3strukt0r/wordpress-php.svg?label=docker%20pulls%20(php))][docker-php]
 
 master-branch (alias stable, latest)
 
@@ -135,5 +139,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 -   etc
 
 [license]: https://github.com/D3strukt0r/docker-wordpress/blob/master/LICENSE.txt
+[docker-nginx]: https://hub.docker.com/repository/docker/d3strukt0r/wordpress-nginx
+[docker-php]: https://hub.docker.com/repository/docker/d3strukt0r/wordpress-php
 [gh-action]: https://github.com/D3strukt0r/docker-wordpress/actions
 [codacy]: https://app.codacy.com/manual/D3strukt0r/docker-wordpress/dashboard
