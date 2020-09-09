@@ -11,35 +11,6 @@ ARG NGINX_VERSION=1.19
 # ---------
 FROM php:${PHP_VERSION}-fpm-alpine AS php
 
-ENV PHP_MAX_EXECUTION_TIME=120 \
-    # 'memory_limit' has to be larger than 'post_max_size' and 'upload_max_filesize'
-    PHP_MEMORY_LIMIT=256M \
-    # Important for upload limit. 'post_max_size' has to be larger than 'upload_max_filesize'
-    PHP_POST_MAX_SIZE=100M \
-    PHP_UPLOAD_MAX_FILESIZE=100M \
-    # The environment Wordpress is currently running in (dev, staging, production, etc.)
-    ENVIRONMENT=prod \
-    # Database settings
-    DB_HOST=db \
-    DB_PORT=3306 \
-    DB_USER=root \
-    DB_PASSWORD= \
-    DB_NAME=wordpress \
-    DB_CHARSET=utf8mb4 \
-    DB_COLLATE=utf8mb4_unicode_ci \
-    DB_TABLE_PREFIX=wp_ \
-    # Wordpress secrets
-    WP_AUTH_KEY= \
-    WP_SECURE_AUTH_KEY= \
-    WP_LOGGED_IN_KEY= \
-    WP_NONCE_KEY= \
-    WP_AUTH_SALT= \
-    WP_SECURE_AUTH_SALT= \
-    WP_LOGGED_IN_SALT= \
-    WP_NONCE_SALT= \
-    # Other Wordpress settings
-    WP_DEBUG=false
-
 WORKDIR /app
 
 # Setup environment
@@ -148,9 +119,6 @@ CMD ["php-fpm"]
 # -----------
 # Depends on the "php" stage above
 FROM nginx:${NGINX_VERSION}-alpine AS nginx
-
-ENV NGINX_CLIENT_MAX_BODY_SIZE=100M \
-    USE_HTTPS=false
 
 WORKDIR /app
 
