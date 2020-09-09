@@ -55,7 +55,6 @@ docker run -p 80:80 -v $PWD/uploads:/app/wp-content/uploads d3strukt0r/wordpress
 <!-- markdownlint-disable MD030 -->
 
 -   `PHP_MAX_EXECUTION_TIME` - The maximum time php can run per request (Default: `100M`)
-
 -   `PHP_MEMORY_LIMIT` - The memory limit that php can use (Default: `256M`)
 
 -   `PHP_POST_MAX_SIZE` - The maximum size for sending POST requests (maximum upload size) (has to be the same on nginx) (Default: `100M`)
