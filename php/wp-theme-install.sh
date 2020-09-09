@@ -26,7 +26,7 @@ usage() {
     echo "   ie: $0 customify"
     echo "       $0 -q customify twentynineteen"
     echo
-	echo 'Possible values for options:'
+    echo 'Possible values for options:'
     echo '  -?|-h|--help  Opens help page'
     echo '  -q|--quiet    Mutes notes'
 }
