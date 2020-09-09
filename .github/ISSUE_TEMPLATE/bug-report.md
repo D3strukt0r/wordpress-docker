@@ -15,8 +15,11 @@ Steps to reproduce the behavior:
 <!-- markdownlint-disable MD030 -->
 
 1.  Go to '...'
+
 2.  Click on '....'
+
 3.  Scroll down to '....'
+
 4.  See error
 
 <!-- markdownlint-enable MD030 -->
