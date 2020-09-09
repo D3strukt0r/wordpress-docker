@@ -15,7 +15,6 @@ Steps to reproduce the behavior:
 <!-- markdownlint-disable MD030 -->
 
 1.  Go to '...'
-
 2.  Click on '....'
 
 3.  Scroll down to '....'
