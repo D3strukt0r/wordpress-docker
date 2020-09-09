@@ -19,6 +19,7 @@ RUN set -eux; \
     apk update; \
     apk add --no-cache \
         bash \
+        bash-completion \
         curl \
         unzip \
         # Alpine package for "imagemagick" contains ~120 .so files,
@@ -132,6 +133,7 @@ RUN set -eux; \
     apk update; \
     apk add --no-cache \
         bash \
+        bash-completion \
         openssl
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
