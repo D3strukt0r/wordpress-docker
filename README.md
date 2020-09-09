@@ -46,7 +46,7 @@ docker run -p 80:80 -v $PWD/uploads:/app/wp-content/uploads d3strukt0r/wordpress
 
 #### Environment Variables
 
-##### PHP
+##### PHP Envs
 
 ###### PHP settings
 
@@ -89,7 +89,7 @@ docker run -p 80:80 -v $PWD/uploads:/app/wp-content/uploads d3strukt0r/wordpress
 -   `WP_DEBUG` - Whether to enable debug mode (Default: `false`)
 <!-- markdownlint-enable MD030 -->
 
-##### Nginx
+##### Nginx Envs
 
 <!-- markdownlint-disable MD030 -->
 -   `NGINX_CLIENT_MAX_BODY_SIZE` - The maximum size for sending POST requests (maximum upload size) (has to be the same on php) (Default: `100M`)
@@ -107,7 +107,7 @@ docker run -p 80:80 -v $PWD/uploads:/app/wp-content/uploads d3strukt0r/wordpress
 
 #### Useful File Locations
 
-##### PHP
+##### PHP Files
 
 <!-- markdownlint-disable MD030 -->
 -   `/usr/local/bin/wp-plugin-install` - Installs a plugin from wordpress in the current directory
