@@ -26,7 +26,14 @@ RUN set -eux; \
         # see: https://github.com/docker-library/wordpress/pull/497
         imagemagick \
         # Required to check connectivity
-        mysql-client
+        mysql-client; \
+    \
+    # Custom bash config
+    { \
+        echo 'source /etc/profile.d/bash_completion.sh'; \
+        # <green> user@host <normal> : <blue> dir <normal> $#
+        echo 'export PS1="🐳 \e[38;5;10m\u@\h\e[0m:\e[38;5;12m\w\e[0m\\$ "'; \
+    } >"$HOME/.bashrc"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -77,17 +84,21 @@ RUN set -eux; \
     apk add --no-cache --virtual .phpexts-rundeps $RUN_DEPS; \
     \
     # Remove building tools for smaller container size
-    apk del .build-deps; \
-    \
-    # Get WP CLI and autocompletion
-    curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
-    chmod +x /usr/local/bin/wp
+    apk del .build-deps
 
 COPY php/wp-plugin-install.sh /usr/local/bin/wp-plugin-install
 COPY php/wp-theme-install.sh /usr/local/bin/wp-theme-install
 COPY php/wp-config.php ./
 
 RUN set -eux; \
+    \
+    # Get WP CLI and autocompletion
+    curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
+    chmod +x /usr/local/bin/wp; \
+    \
+    mkdir /etc/bash_completion.d/; \
+    curl -fsSL -o /etc/bash_completion.d/wp-completion.bash https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
+    sed -i -e 's/wp cli completions/wp --allow-root cli completions/g' /etc/bash_completion.d/wp-completion.bash; \
     \
     # Download Wordpress
     wp --allow-root core download; \
@@ -134,7 +145,14 @@ RUN set -eux; \
     apk add --no-cache \
         bash \
         bash-completion \
-        openssl
+        openssl; \
+    \
+    # Custom bash config
+    { \
+        echo 'source /etc/profile.d/bash_completion.sh'; \
+        # <green> user@host <normal> : <blue> dir <normal> $#
+        echo 'export PS1="🐳 \e[38;5;10m\u@\h\e[0m:\e[38;5;12m\w\e[0m\\$ "'; \
+    } >"$HOME/.bashrc"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
