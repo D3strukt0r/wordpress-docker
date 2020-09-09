@@ -141,4 +141,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 [docker-nginx]: https://hub.docker.com/repository/docker/d3strukt0r/wordpress-nginx
 [docker-php]: https://hub.docker.com/repository/docker/d3strukt0r/wordpress-php
 [gh-action]: https://github.com/D3strukt0r/docker-wordpress/actions
-[codacy]: https://app.codacy.com/manual/D3strukt0r/docker-wordpress/dashboard
+[codacy]: https://www.codacy.com/manual/D3strukt0r/docker-wordpress
