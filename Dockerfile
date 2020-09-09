@@ -13,7 +13,7 @@ FROM php:${PHP_VERSION}-fpm-alpine AS php
 
 WORKDIR /app
 
-# Setup environment
+# hadolint ignore=DL3018
 RUN set -eux; \
     \
     apk update; \
@@ -25,7 +25,12 @@ RUN set -eux; \
         # see: https://github.com/docker-library/wordpress/pull/497
         imagemagick \
         # Required to check connectivity
-        mysql-client; \
+        mysql-client
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# hadolint ignore=DL3018,SC2086
+RUN set -eux; \
     \
     # Get all php requirements
     apk add --no-cache --virtual .build-deps \
@@ -68,7 +73,7 @@ RUN set -eux; \
             sort -u | \
             awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )"; \
-    apk add --virtual .phpexts-rundeps $RUN_DEPS; \
+    apk add --no-cache --virtual .phpexts-rundeps $RUN_DEPS; \
     \
     # Remove building tools for smaller container size
     apk del .build-deps; \
@@ -81,7 +86,6 @@ COPY php/wp-plugin-install.sh /usr/local/bin/wp-plugin-install
 COPY php/wp-theme-install.sh /usr/local/bin/wp-theme-install
 COPY php/wp-config.php ./
 
-# Setup application
 RUN set -eux; \
     \
     # Download Wordpress
@@ -122,6 +126,16 @@ FROM nginx:${NGINX_VERSION}-alpine AS nginx
 
 WORKDIR /app
 
+# hadolint ignore=DL3018
+RUN set -eux; \
+    \
+    apk update; \
+    apk add --no-cache \
+        bash \
+        openssl
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 COPY --from=php /app/ ./
 
 COPY nginx/nginx.conf       /etc/nginx/nginx.template
@@ -129,11 +143,6 @@ COPY nginx/default.conf     /etc/nginx/conf.d/default.template
 COPY nginx/default-ssl.conf /etc/nginx/conf.d/default-ssl.template
 
 RUN set -eux; \
-    \
-    apk update; \
-    apk add --no-cache \
-        bash \
-        openssl; \
     \
     # Remove default config, will be replaced on startup with custom one
     rm /etc/nginx/conf.d/default.conf; \
