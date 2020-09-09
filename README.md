@@ -30,7 +30,6 @@ In order to run this container you'll need docker installed.
 
 -   [Windows](https://docs.docker.com/docker-for-windows/install/)
 -   [OS X](https://docs.docker.com/docker-for-mac/install/)
-
 -   [Linux](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
 <!-- markdownlint-enable MD030 -->
