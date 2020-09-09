@@ -125,8 +125,7 @@ There is no versioning in this project. Only the develop for nightly builds, and
 
 -   **Manuele Vaccari** - [D3strukt0r](https://github.com/D3strukt0r) - _Initial work_
 
-See also the list of [contributors](https://github.com/D3strukt0r/docker-wordpress/contributors) who
-participated in this project.
+See also the list of [contributors](https://github.com/D3strukt0r/docker-wordpress/contributors) who participated in this project.
 
 ## License
 
