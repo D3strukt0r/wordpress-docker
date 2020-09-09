@@ -73,7 +73,8 @@ if [ "$1" = 'nginx' ]; then
     # ----------------------------------------
 
     # https://github.com/docker-library/docs/issues/496#issuecomment-287927576
-    envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/nginx.template >/etc/nginx/nginx.conf
+    # shellcheck disable=SC2016,SC2046
+    envsubst "$(printf '${%s} ' $(compgen -A variable))" </etc/nginx/nginx.template >/etc/nginx/nginx.conf
     if [ "$USE_HTTPS" = 'true' ]; then
         if [ ! -f /certs/website.crt ] || [ ! -f /certs/website.key ]; then
             if [ ! -d /certs ]; then
@@ -92,11 +93,13 @@ if [ "$1" = 'nginx' ]; then
 
         echo 'Enabling HTTPS for nginx ...'
         if [ ! -f /etc/nginx/conf.d/default-ssl.conf ]; then
-            envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default-ssl.template >/etc/nginx/conf.d/default-ssl.conf
+            # shellcheck disable=SC2016,SC2046
+            envsubst "$(printf '${%s} ' $(compgen -A variable))" </etc/nginx/conf.d/default-ssl.template >/etc/nginx/conf.d/default-ssl.conf
         fi
     else
         echo 'Enabling HTTP for nginx ...'
-        envsubst "$(printf '${%s} ' $(bash -c "compgen -A variable"))" </etc/nginx/conf.d/default.template >/etc/nginx/conf.d/default.conf
+        # shellcheck disable=SC2016,SC2046
+        envsubst "$(printf '${%s} ' $(compgen -A variable))" </etc/nginx/conf.d/default.template >/etc/nginx/conf.d/default.conf
     fi
 fi
 
