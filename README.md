@@ -39,11 +39,18 @@ In order to run this container you'll need docker installed.
 #### Container Parameters
 
 ```shell
-docker run -v $PWD/uploads:/app/wp-content/uploads -e DB_PASSWORD=password -e <all the keys> d3strukt0r/wordpress-php
+docker run \
+    -v $PWD/uploads:/app/wp-content/uploads
+    -e DB_PASSWORD=password
+    -e <all the keys>
+    d3strukt0r/wordpress-php
 ```
 
 ```shell
-docker run -p 80:80 -v $PWD/uploads:/app/wp-content/uploads d3strukt0r/wordpress-nginx
+docker run \
+    -p 80:80
+    -v $PWD/uploads:/app/wp-content/uploads
+    d3strukt0r/wordpress-nginx
 ```
 
 #### Environment Variables

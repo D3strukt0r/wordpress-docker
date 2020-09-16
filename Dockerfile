@@ -118,8 +118,6 @@ RUN set -eux; \
     find . -type d -exec chmod 755 {} \;; \
     find . -type f -exec chmod 644 {} \;
 
-VOLUME ["/data"]
-
 # https://github.com/renatomefi/php-fpm-healthcheck
 RUN curl -fsSL -o /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck; \
     chmod +x /usr/local/bin/php-fpm-healthcheck; \
@@ -172,8 +170,6 @@ RUN set -eux; \
     \
     # Fix permission
     adduser -u 82 -D -S -G www-data www-data
-
-VOLUME ["/data"]
 
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["test", "-e", "/var/run/nginx.pid", "||", "exit", "1"]
 
