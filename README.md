@@ -55,6 +55,10 @@ docker run \
 
 #### Environment Variables
 
+All environment variables support Docker Secrets. To learn more about Docker Secrets, read [here](https://docs.docker.com/engine/swarm/secrets/).
+
+Basically, after creating a secret, append a `_FILE` (e. g. `DB_PASSWORD_FILE`) after the environment variable and set the path to something like `/run/secrets/<something>`.
+
 ##### PHP Envs
 
 ###### PHP settings
