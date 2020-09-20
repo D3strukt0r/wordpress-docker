@@ -86,10 +86,6 @@ RUN set -eux; \
     # Remove building tools for smaller container size
     apk del .build-deps
 
-COPY php/wp-plugin-install.sh /usr/local/bin/wp-plugin-install
-COPY php/wp-theme-install.sh /usr/local/bin/wp-theme-install
-COPY php/wp-config.php ./
-
 RUN set -eux; \
     \
     # Get WP CLI and autocompletion
@@ -98,7 +94,13 @@ RUN set -eux; \
     \
     mkdir /etc/bash_completion.d/; \
     curl -fsSL -o /etc/bash_completion.d/wp-completion.bash https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
-    sed -i -e 's/wp cli completions/wp --allow-root cli completions/g' /etc/bash_completion.d/wp-completion.bash; \
+    sed -i -e 's/wp cli completions/wp --allow-root cli completions/g' /etc/bash_completion.d/wp-completion.bash
+
+COPY php/wp-plugin-install.sh /usr/local/bin/wp-plugin-install
+COPY php/wp-theme-install.sh /usr/local/bin/wp-theme-install
+COPY php/wp-config.php ./
+
+RUN set -eux; \
     \
     # Download Wordpress
     wp --allow-root core download; \
@@ -110,13 +112,15 @@ RUN set -eux; \
     \
     # Redownload latest theme
     wp-theme-install twentytwenty; \
-    mkdir -p /skeleton/wp-content/themes/; \
-    cp -r ./wp-content /skeleton/; \
     \
     # Fix permission
     chown www-data:www-data -R .; \
     find . -type d -exec chmod 755 {} \;; \
-    find . -type f -exec chmod 644 {} \;
+    find . -type f -exec chmod 644 {} \;; \
+    \
+    # Create skeleton
+    mkdir -p /skeleton/; \
+    cp -r ./wp-content /skeleton/
 
 # https://github.com/renatomefi/php-fpm-healthcheck
 RUN curl -fsSL -o /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck; \
