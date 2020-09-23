@@ -26,7 +26,9 @@ RUN set -eux; \
         # see: https://github.com/docker-library/wordpress/pull/497
         imagemagick \
         # Required to check connectivity
-        mysql-client; \
+        mysql-client \
+        # Required for healthcheck
+        fcgi; \
     \
     # Custom bash config
     { \
@@ -126,7 +128,7 @@ RUN set -eux; \
 RUN curl -fsSL -o /usr/local/bin/php-fpm-healthcheck https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck; \
     chmod +x /usr/local/bin/php-fpm-healthcheck; \
     echo 'pm.status_path = /status' >> /usr/local/etc/php-fpm.d/zz-docker.conf
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["php-fpm-healthcheck"]
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 CMD php-fpm-healthcheck || exit 1
 
 COPY php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]
@@ -175,7 +177,7 @@ RUN set -eux; \
     # Fix permission
     adduser -u 82 -D -S -G www-data www-data
 
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["test", "-e", "/var/run/nginx.pid", "||", "exit", "1"]
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost/ || exit 1
 
 COPY nginx/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]
