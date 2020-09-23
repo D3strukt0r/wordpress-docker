@@ -19,21 +19,13 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: wordpress
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    depends_on:
-      - db
-    networks:
-      - internal
-    ports:
-      - 8081:80
-    environment:
-      UPLOAD_LIMIT: 100M
-
   php:
     build:
       context: .
       target: php
+      cache_from:
+        - ${PHP_IMAGE_CACHE:-d3strukt0r/wordpress-php}
+    image: ${PHP_IMAGE:-d3strukt0r/wordpress-php}
     depends_on:
       - db
     networks:
@@ -55,10 +47,14 @@ services:
       WP_LOGGED_IN_SALT: 454d11e408fb09abf71fad2ebcfb6c974001ae05
       WP_NONCE_SALT: 33f132e45824f7ed5b580a75d74fce48162847d7
 
-  web:
+  nginx:
     build:
       context: .
       target: nginx
+      cache_from:
+        - ${PHP_IMAGE_CACHE:-d3strukt0r/wordpress-php}
+        - ${NGINX_IMAGE_CACHE:-d3strukt0r/wordpress-nginx}
+    image: ${NGINX_IMAGE:-d3strukt0r/wordpress-nginx}
     depends_on:
       - php
     networks:

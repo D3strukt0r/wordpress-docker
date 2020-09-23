@@ -11,9 +11,9 @@ on:
       - develop
     paths:
       - .github/workflows/ci-cd.yml
-      - 'nginx/**'
-      - 'php/**'
-      - '**/Dockerfile'
+      - "nginx/**"
+      - "php/**"
+      - "**/Dockerfile"
 
   pull_request:
 
@@ -26,8 +26,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Run tests
         run: |
@@ -44,11 +43,10 @@ jobs:
     needs: test
 
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push' && github.repository == 'D3strukt0r/docker-wordpress'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set variables
         run: |
@@ -66,21 +64,16 @@ jobs:
 
           echo "::set-env name=VERSION::$VERSION"
 
-      - name: Build PHP image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME_PHP --target php
-
-      - name: Build Nginx image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME_NGINX --target nginx
-
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Push PHP image to Docker Hub
-        run: |
-          docker tag $IMAGE_NAME_PHP $IMAGE_ID_PHP:$VERSION
-          docker push $IMAGE_ID_PHP:$VERSION
+      - name: Build images
+        run: docker-compose build
 
-      - name: Push Nginx image to Docker Hub
-        run: |
-          docker tag $IMAGE_NAME_NGINX $IMAGE_ID_NGINX:$VERSION
-          docker push $IMAGE_ID_NGINX:$VERSION
+      - name: Push images
+        env:
+          PHP_IMAGE_CACHE: ${{ env.IMAGE_ID_PHP }}
+          PHP_IMAGE: ${{ env.IMAGE_ID_PHP }}:${{ env.VERSION }}
+          NGINX_IMAGE_CACHE: ${{ env.IMAGE_ID_NGINX }}
+          NGINX_IMAGE: ${{ env.IMAGE_ID_NGINX }}:${{ env.VERSION }}
+        run: docker-compose push php nginx
