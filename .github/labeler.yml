@@ -1,0 +1,16 @@
+# Add 'repo' label to any root file changes
+repo:
+  - ./*
+
+# Add 'docker' label to any change to files within the docker dir and docker relevant files
+docker:
+  - docker-compose.yml
+  - Dockerfile
+
+# Add 'nginx' label to any change to files within the nginx dir
+nginx:
+  - nginx/**/*
+
+# Add 'php' label to any change to files within the php dir
+php:
+  - php/**/*
