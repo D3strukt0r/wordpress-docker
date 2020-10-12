@@ -17,25 +17,40 @@ on:
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set variables
+      - name: Prepare
+        id: prep
         run: |
-          # Change all uppercase to lowercase
-          echo "::set-env name=IMAGE_ID_PHP::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP" | tr '[A-Z]' '[a-z]')"
-          echo "::set-env name=IMAGE_ID_NGINX::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX" | tr '[A-Z]' '[a-z]')"
+          echo "::set-output name=repositoryPhp::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP" | tr '[A-Z]' '[a-z]')"
+          echo "::set-output name=repositoryNginx::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX" | tr '[A-Z]' '[a-z]')"
 
       - name: Update README for PHP image on Docker Hub
         uses: peter-evans/dockerhub-description@v2
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKERHUB_REPOSITORY: ${{ env.IMAGE_ID_PHP }}
+        with:
+          # Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have Admin permissions for the repository.
+          username: ${{ secrets.DOCKER_USERNAME }}
+          # Docker Hub password.
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          # Docker Hub repository in the format <namespace>/<name>.
+          repository: ${{ steps.prep.outputs.repositoryPhp }} # optional, default is "github.repository"
+          # Docker Hub repository short description. Input exceeding 100 characters will be truncated.
+          short-description: ${{ github.event.repository.description }} # optional
+          # Path to the repository readme.
+          # readme-filepath: ./README.md # optional, default is "./README.md"
 
       - name: Update README for Nginx image on Docker Hub
         uses: peter-evans/dockerhub-description@v2
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKERHUB_REPOSITORY: ${{ env.IMAGE_ID_NGINX }}
+        with:
+          # Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have Admin permissions for the repository.
+          username: ${{ secrets.DOCKER_USERNAME }}
+          # Docker Hub password.
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          # Docker Hub repository in the format <namespace>/<name>.
+          repository: ${{ steps.prep.outputs.repositoryNginx }} # optional, default is "github.repository"
+          # Docker Hub repository short description. Input exceeding 100 characters will be truncated.
+          short-description: ${{ github.event.repository.description }} # optional
+          # Path to the repository readme.
+          # readme-filepath: ./README.md # optional, default is "./README.md"
