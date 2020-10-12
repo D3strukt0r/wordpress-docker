@@ -27,7 +27,7 @@ jobs:
           echo "::set-output name=repositoryPhp::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_PHP" | tr '[A-Z]' '[a-z]')"
           echo "::set-output name=repositoryNginx::$(echo "${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME_NGINX" | tr '[A-Z]' '[a-z]')"
 
-      - name: Update README for php image on Docker Hub
+      - name: Update README for PHP image on Docker Hub
         uses: peter-evans/dockerhub-description@v2
         with:
           # Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have Admin permissions for the repository.
@@ -41,7 +41,7 @@ jobs:
           # Path to the repository readme.
           # readme-filepath: ./README.md # optional, default is "./README.md"
 
-      - name: Update README for nginx image on Docker Hub
+      - name: Update README for Nginx image on Docker Hub
         uses: peter-evans/dockerhub-description@v2
         with:
           # Docker Hub username. If updating a Docker Hub repository belonging to an organization, this user must have Admin permissions for the repository.
